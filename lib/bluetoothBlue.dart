@@ -51,29 +51,29 @@ class _FlutterBlueAppState extends State<FlutterBlueApp> {
     });
   }
 
-  List scanresults = [];
-  Future<void> _startScannig() async {
-    var scan = [];
-    try {
-      final result = await platform.invokeMethod('startScan');
-      print("result flutter: $result ");
-      scan = result;
-      setState(() {
-        isScanning = true;
-      });
-    } on PlatformException catch (e) {
-      print("failed to start advertising : '${e.message}'.");
-    }
+  // List scanresults = [];
+  // Future<void> _startScannig() async {
+  //   var scan = [];
+  //   try {
+  //     final result = await platform.invokeMethod('startScan');
+  //     print("result flutter: $result ");
+  //     scan = result;
+  //     setState(() {
+  //       isScanning = true;
+  //     });
+  //   } on PlatformException catch (e) {
+  //     print("failed to start advertising : '${e.message}'.");
+  //   }
 
-    setState(() {
-      scanresults = scan;
-    });
-  }
+  //   setState(() {
+  //     scanresults = scan;
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    _startAdvertise();
+    // _startAdvertise();
     // Immediately get the state of FlutterBlue
     _flutterBlue.state.listen((s) {
       setState(() {
@@ -100,9 +100,6 @@ class _FlutterBlueAppState extends State<FlutterBlueApp> {
   }
 
   _startScan() {
-    // _starScan();
-    // print("scaning");
-    // List<Guid> withDevices;
     _scanSubscription = _flutterBlue
         .scan(
             timeout: const Duration(seconds: 10), scanMode: ScanMode.lowLatency)

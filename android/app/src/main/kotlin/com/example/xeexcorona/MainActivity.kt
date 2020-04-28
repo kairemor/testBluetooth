@@ -22,7 +22,8 @@ class MainActivity: FlutterActivity() {
     private val CHANNEL = "bluetooth-mac-address";
     private var isAdvertising = false ;
     private val uuid = "c98f994a-3c7b-49af-9b0e-36976f272803";
-    private var charLength = 3
+    private var charLength = 3;
+    // private var advertiser: BluetoothLeAdvertiser!? = null;
     private val settings = AdvertiseSettings.Builder()
         .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
         .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
@@ -32,16 +33,16 @@ class MainActivity: FlutterActivity() {
 
     private val pUuid = ParcelUuid(UUID.fromString(uuid));
 
-    // val randomUUID = UUID.randomUUID().toString()
-    val finalString = "data"
-    // CentralLog.d(TAG, "Unique string: $finalString")
+    val randomUUID = UUID.randomUUID().toString()
+    val finalString = randomUUID.substring(randomUUID.length - charLength, randomUUID.length)
+    // print("Unique string: " + finalString);
     val serviceDataByteArray = finalString.toByteArray()
     var datas = AdvertiseData.Builder()
             .setIncludeDeviceName(false)
+            .setIncludeTxPowerLevel(true)
             .addServiceUuid(pUuid)
-            // .setIncludeTxPowerLevel(true)
-            // .addServiceData(serviceDataByteArray)
-            // .addManufacturerData(1023, serviceDataByteArray)
+            // .addServiceData(pUuid)
+            .addManufacturerData(1023, serviceDataByteArray)
             .build()
 
     val advertisingCallback: AdvertiseCallback =  object : AdvertiseCallback() {
@@ -134,7 +135,12 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun startAdvertise(settings: AdvertiseSettings, datas: AdvertiseData, advertisingCallback: AdvertiseCallback): Boolean {
-        val advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+        if( !BluetoothAdapter.getDefaultAdapter().isMultipleAdvertisementSupported() ) {
+            Log.e("BLE advertise", "This app don't support bluetooth advertising");
+            return false
+        }
+        print(finalString);
+        var advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
         advertiser.startAdvertising( settings, datas, advertisingCallback );
         return isAdvertising;
     }
